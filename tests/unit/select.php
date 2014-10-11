@@ -176,4 +176,12 @@ class selectTest extends PHPUnit_Framework_TestCase
     $this->assertEquals($exp, $q->asSQL(), 'Полный запрос');
     $this->assertEquals($vars, $q->getBindedValues(), 'Переменные для подстановки');
   }
+
+  function testToString()
+  {
+    $qb = new \SQRT\QueryBuilder();
+    $q = $qb->select('pages');
+
+    $this->assertEquals((string)$q, $q->asSQL(), 'Приведение к строке');
+  }
 }

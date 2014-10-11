@@ -15,6 +15,11 @@ abstract class Query
     $this->table_prefix = $table_prefix;
   }
 
+  function __toString()
+  {
+    return $this->asSQL();
+  }
+
   /** Создать SQL */
   abstract public function asSQL();
 
