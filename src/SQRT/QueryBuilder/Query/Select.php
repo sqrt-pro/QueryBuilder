@@ -77,7 +77,7 @@ class Select extends FilteredQuery
 
   public function groupby($mixed, $_ = null)
   {
-    if (!is_array($mixed)) {
+    if (!is_array($mixed) && !empty($mixed)) {
       $mixed = func_get_args();
     }
 

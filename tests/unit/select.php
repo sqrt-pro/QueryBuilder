@@ -61,6 +61,9 @@ class selectTest extends PHPUnit_Framework_TestCase
 
     $q->orderby('`age`, created_at DESC');
     $this->assertEquals($exp, $q->asSQL(), 'Сортировка указана как строка');
+
+    $q->orderby(null);
+    $this->assertEquals('SELECT * FROM `pages`', $q->asSQL(), 'Сортировка удалена');
   }
 
   function testGroupBy()
@@ -78,6 +81,9 @@ class selectTest extends PHPUnit_Framework_TestCase
 
     $q->groupby('`one`, `two`');
     $this->assertEquals($exp, $q->asSQL(), 'Группировка указана как строка');
+
+    $q->groupby(null);
+    $this->assertEquals('SELECT * FROM `pages`', $q->asSQL(), 'Условие удалено');
   }
 
   function testWhere()
@@ -133,6 +139,10 @@ class selectTest extends PHPUnit_Framework_TestCase
     $q->page(3, 20);
     $exp = 'SELECT * FROM `pages` LIMIT 40, 20';
     $this->assertEquals($exp, $q->asSQL(), 'Указание отступа в виде страниц');
+
+    $q->page(null, 20);
+    $exp = 'SELECT * FROM `pages` LIMIT 20';
+    $this->assertEquals($exp, $q->asSQL(), 'Указание лимита в виде страниц');
   }
 
   function testJoin()

@@ -44,14 +44,14 @@ abstract class FilteredQuery extends Query
 
   public function page($page, $onpage)
   {
-    $this->limit($onpage, (($page - 1) * $onpage));
+    $this->limit($onpage, $page ? (($page - 1) * $onpage) : null);
 
     return $this;
   }
 
   public function orderby($mixed, $_ = null)
   {
-    if (!is_array($mixed)) {
+    if (!is_array($mixed) && !empty($mixed)) {
       $mixed = func_get_args();
     }
 
