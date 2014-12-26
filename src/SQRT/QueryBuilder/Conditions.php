@@ -17,16 +17,20 @@ class Conditions extends Condition
   protected $join_by_and = true;
 
   /** Условие в виде запроса SQL */
-  public function asSQL()
+  public function asSQL($force_braces = null)
   {
     $arr = array();
     if ($this->conditions) {
       foreach ($this->conditions as $cond) {
-        $arr[] = $cond->asSQL();
+        $arr[] = $cond->asSQL(
+          is_null($force_braces)
+            ? $cond instanceof Conditions && !$this->join_by_and
+            : $force_braces
+        );
       }
     }
 
-    return $this->processPieces($arr);
+    return $this->processPieces($arr, $force_braces);
   }
 
   /** Условие в виде подготовленного выражения с переменными */
@@ -62,7 +66,7 @@ class Conditions extends Condition
   public function mixed($mixed)
   {
     if ($mixed instanceof Condition) {
-      $this->condition($mixed);
+      $this->add($mixed);
     } elseif (is_array($mixed)) {
       foreach ($mixed as $key => $val) {
         if (is_array($val)) {
@@ -83,8 +87,12 @@ class Conditions extends Condition
   }
 
   /** Встраивание условия или набора условий */
-  public function condition(Condition $cond)
+  public function add(Condition $cond)
   {
+    if ($cond instanceof Conditions && !$cond->hasConditions()) {
+      return $this;
+    }
+
     $this->conditions[] = $cond;
 
     return $this;
@@ -205,20 +213,27 @@ class Conditions extends Condition
     return $this;
   }
 
+  /** @return Condition[] */
   public function getConditions()
   {
-    return $this->conditions;
+    return $this->conditions ?: array();
+  }
+
+  /** Проверка, есть ли условия */
+  public function hasConditions()
+  {
+    return !empty($this->conditions);
   }
 
   /** Собираем общую строку из отдельных условий */
-  protected function processPieces($arr)
+  protected function processPieces($arr, $force_braces = null)
   {
     if (empty($arr)) {
       return '';
     }
 
     $glue   = ' AND ';
-    $braces = (bool)$this->not;
+    $braces = $force_braces ?: (bool)$this->not;
     if (!$this->join_by_and) {
       $glue   = ' OR ';
       $braces = true;

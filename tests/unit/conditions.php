@@ -2,6 +2,15 @@
 
 require_once __DIR__ . '/../init.php';
 
+use SQRT\QueryBuilder\Conditions;
+use SQRT\QueryBuilder\Condition\Equal;
+use SQRT\QueryBuilder\Condition\In;
+use SQRT\QueryBuilder\Condition\Between;
+use SQRT\QueryBuilder\Condition\Like;
+use SQRT\QueryBuilder\Condition\Greater;
+use SQRT\QueryBuilder\Condition\Less;
+use SQRT\QueryBuilder\Condition\Expr;
+
 class conditionsTest extends PHPUnit_Framework_TestCase
 {
   /**
@@ -9,7 +18,7 @@ class conditionsTest extends PHPUnit_Framework_TestCase
    */
   function testEqual($column, $value, $exp_sql, $exp_stmt, $vals, $prefix = null, $not_equal = null)
   {
-    $c = new \SQRT\QueryBuilder\Condition\Equal($column, $value, $not_equal);
+    $c = new Equal($column, $value, $not_equal);
 
     $this->assertEquals($exp_sql, $c->asSQL(), 'В виде SQL');
     $this->assertEquals($exp_stmt, $c->asStatement($prefix), 'В виде выражения');
@@ -30,7 +39,7 @@ class conditionsTest extends PHPUnit_Framework_TestCase
 
   function testIn()
   {
-    $c = new \SQRT\QueryBuilder\Condition\In('one', array(1, 'two', null));
+    $c = new In('one', array(1, 'two', null));
 
     $this->assertEquals('`one` IN (1, "two", NULL)', $c->asSQL(), 'В виде SQL');
     $this->assertEquals(
@@ -51,7 +60,7 @@ class conditionsTest extends PHPUnit_Framework_TestCase
    * @dataProvider dataBetween
    */
   function testBetween($column, $from, $to, $exp_sql, $exp_stmt, $vals, $prefix = null, $not_between = null, $date_format = null) {
-    $c = new \SQRT\QueryBuilder\Condition\Between($column, $from, $to, $not_between);
+    $c = new Between($column, $from, $to, $not_between);
 
     if ($date_format) {
       $c->setDateFormat($date_format);
@@ -101,7 +110,7 @@ class conditionsTest extends PHPUnit_Framework_TestCase
 
   function testLike()
   {
-    $c = new \SQRT\QueryBuilder\Condition\Like('one', 'строка%поиска');
+    $c = new Like('one', 'строка%поиска');
 
     $this->assertEquals('`one` LIKE "строка%поиска"', $c->asSQL(), 'В виде SQL');
     $this->assertEquals('`one` LIKE :where_one', $c->asStatement('where'), 'В виде выражения');
@@ -115,7 +124,7 @@ class conditionsTest extends PHPUnit_Framework_TestCase
 
   function testGreater()
   {
-    $c = new \SQRT\QueryBuilder\Condition\Greater('one', 10);
+    $c = new Greater('one', 10);
 
     $this->assertEquals('`one`>10', $c->asSQL(), 'В виде SQL');
     $this->assertEquals('`one`>:where_one_gt', $c->asStatement('where'), 'В виде выражения');
@@ -129,7 +138,7 @@ class conditionsTest extends PHPUnit_Framework_TestCase
 
   function testLess()
   {
-    $c = new \SQRT\QueryBuilder\Condition\Less('one', 10);
+    $c = new Less('one', 10);
 
     $this->assertEquals('`one`<10', $c->asSQL(), 'В виде SQL');
     $this->assertEquals('`one`<:where_one_lt', $c->asStatement('where'), 'В виде выражения');
@@ -146,7 +155,7 @@ class conditionsTest extends PHPUnit_Framework_TestCase
    */
   function testExpr($expr, $values, $exp_sql, $exp_vals)
   {
-    $c = new \SQRT\QueryBuilder\Condition\Expr($expr, $values);
+    $c = new Expr($expr, $values);
 
     $this->assertEquals($exp_sql, $c->asSQL(), 'В виде SQL');
     $this->assertEquals($exp_vals, $c->getBindedValues(), 'Подставленные значения');
@@ -172,7 +181,7 @@ class conditionsTest extends PHPUnit_Framework_TestCase
 
   function testConditions()
   {
-    $c1 = new \SQRT\QueryBuilder\Conditions();
+    $c1 = new Conditions();
 
     $c1->equal('one', 12)
       ->between('age', 10, 20)
@@ -195,9 +204,9 @@ class conditionsTest extends PHPUnit_Framework_TestCase
     $exp_sql = '`abc`="cde" AND NOT (`one`=12 OR `age` BETWEEN 10 AND 20 OR `name` NOT LIKE "Peter%" OR `status` IN (1, 2, 3))';
     $exp_stmt = '`abc`=:wow_abc AND NOT (`one`=:wow_one OR `age` BETWEEN :wow_age_from AND :wow_age_to OR `name` NOT LIKE :wow_name OR `status` IN (:wow_status_1, :wow_status_2, :wow_status_3))';
 
-    $c2 = new \SQRT\QueryBuilder\Conditions();
+    $c2 = new Conditions();
     $c2->equal('abc', 'cde')
-       ->condition($c1);
+       ->add($c1);
 
     $this->assertEquals($exp_sql, $c2->asSQL(), 'Условие встроено в другое с NOT');
     $this->assertEquals($exp_stmt, $c2->asStatement('wow'), 'Условие встроено в другое с NOT и общим префиксом');
@@ -213,5 +222,35 @@ class conditionsTest extends PHPUnit_Framework_TestCase
       ':wow_abc'      => 'cde'
     );
     $this->assertEquals($arr, $c2->getBindedValues('wow'), 'Подставленные значения');
+  }
+  
+  function testMergeConditions()
+  {
+    $c1 = new Conditions();
+
+    $c1->equal('one', 12)
+      ->between('age', 10, 20);
+    
+    $c2 = new Conditions();
+    $c1->add($c2);
+
+    $this->assertEquals('`one`=12 AND `age` BETWEEN 10 AND 20', $c1->asSQL(), 'Мердж c пустыми условиями');
+
+    $c2->like('name', 'ололо')
+      ->equal('id', 123);
+
+    $c1->add($c2);
+
+    $exp = '`one`=12 AND `age` BETWEEN 10 AND 20 AND `name` LIKE "ололо" AND `id`=123';
+    $this->assertEquals($exp, $c1->asSQL(), 'Мердж двух условий');
+
+    $c3 = new Conditions();
+    $c3->add($c2);
+    $this->assertEquals('`name` LIKE "ололо" AND `id`=123', $c3->asSQL(), 'Добавление к пустым условиям');
+
+    $c1->setJoinByOr();
+
+    $exp = '(`one`=12 OR `age` BETWEEN 10 AND 20 OR (`name` LIKE "ололо" AND `id`=123))';
+    $this->assertEquals($exp, $c1->asSQL(), 'AND вложенный в OR');
   }
 }
