@@ -78,12 +78,16 @@ class Conditions extends Condition
     } else {
       $this->expr($mixed);
     }
+
+    return $this;
   }
 
   /** Встраивание условия или набора условий */
   public function condition(Condition $cond)
   {
     $this->conditions[] = $cond;
+
+    return $this;
   }
 
   public function expr($expr, $values = null)
