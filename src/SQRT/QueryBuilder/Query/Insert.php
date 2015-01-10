@@ -32,21 +32,25 @@ class Insert extends Query
     return $this->processSetBindedVars($this->values ? : null);
   }
 
+  /** @return static */
   public function setEqual($column, $value)
   {
     return parent::setEqual($column, $value);
   }
 
+  /** @return static */
   public function setExpr($expr)
   {
     return parent::setExpr($expr);
   }
 
+  /** @return static */
   public function setFromArray(array $array)
   {
     return parent::setFromArray($array);
   }
 
+  /** @return static */
   public function setOnDuplicateKeyUpdate($on_duplicate_key_update = true)
   {
     $this->on_duplicate_key_update = $on_duplicate_key_update;

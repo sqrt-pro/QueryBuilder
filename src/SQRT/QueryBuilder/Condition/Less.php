@@ -31,6 +31,7 @@ class Less extends Condition
     return array(Query::Placeholder($this->column . '_lt', $prefix) => $this->values);
   }
 
+  /** @return static */
   public function setOrEqual($or_equal = true)
   {
     $this->or_equal = $or_equal;

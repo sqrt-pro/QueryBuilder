@@ -29,6 +29,7 @@ abstract class Query
   /** Список переменных для подстановки */
   abstract public function getBindedValues();
 
+  /** @return static */
   public function bind($key, $value)
   {
     $this->values[Query::Placeholder($key)] = $value;
@@ -36,6 +37,7 @@ abstract class Query
     return $this;
   }
 
+  /** @return static */
   public function bindArray(array $array)
   {
     foreach ($array as $key => $val) {
@@ -45,6 +47,7 @@ abstract class Query
     return $this;
   }
 
+  /** @return static */
   public function setTablePrefix($prefix)
   {
     $this->table_prefix = $prefix;
@@ -57,6 +60,7 @@ abstract class Query
     return $this->table_prefix;
   }
 
+  /** @return static */
   protected function setEqual($column, $value)
   {
     if (is_null($value)) {
@@ -68,6 +72,7 @@ abstract class Query
     return $this;
   }
 
+  /** @return static */
   protected function setExpr($expr)
   {
     $this->set_arr[] = $expr;
@@ -75,6 +80,7 @@ abstract class Query
     return $this;
   }
 
+  /** @return static */
   protected function setFromArray(array $array)
   {
     foreach ($array as $key => $val) {

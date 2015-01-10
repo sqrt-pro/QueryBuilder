@@ -53,6 +53,7 @@ class Select extends FilteredQuery
     return $vars;
   }
 
+  /** @return static */
   public function columns($mixed, $_ = null)
   {
     if (!is_array($mixed)) {
@@ -64,6 +65,7 @@ class Select extends FilteredQuery
     return $this;
   }
 
+  /** @return static */
   public function join($table, $on, $type = null)
   {
     $this->join[$table] = array(
@@ -75,6 +77,7 @@ class Select extends FilteredQuery
     return $this;
   }
 
+  /** @return static */
   public function groupby($mixed, $_ = null)
   {
     if (!is_array($mixed) && !empty($mixed)) {
@@ -86,6 +89,7 @@ class Select extends FilteredQuery
     return $this;
   }
 
+  /** @return static */
   public function having($mixed)
   {
     if (is_null($mixed)) {

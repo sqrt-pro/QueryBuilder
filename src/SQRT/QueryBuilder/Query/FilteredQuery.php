@@ -13,6 +13,7 @@ abstract class FilteredQuery extends Query
   protected $offset;
   protected $orderby;
 
+  /** @return static */
   public function where($mixed)
   {
     if (is_null($mixed)) {
@@ -34,6 +35,7 @@ abstract class FilteredQuery extends Query
     return $this->where;
   }
 
+  /** @return static */
   public function limit($limit, $offset = null)
   {
     $this->limit  = $limit;
@@ -42,6 +44,7 @@ abstract class FilteredQuery extends Query
     return $this;
   }
 
+  /** @return static */
   public function page($page, $onpage)
   {
     $this->limit($onpage, $page ? (($page - 1) * $onpage) : null);
@@ -49,6 +52,7 @@ abstract class FilteredQuery extends Query
     return $this;
   }
 
+  /** @return static */
   public function orderby($mixed, $_ = null)
   {
     if (!is_array($mixed) && !empty($mixed)) {

@@ -37,16 +37,19 @@ class Update extends FilteredQuery
     return $vars;
   }
 
+  /** @return static */
   public function setEqual($column, $value)
   {
     return parent::setEqual($column, $value);
   }
 
+  /** @return static */
   public function setExpr($expr)
   {
     return parent::setExpr($expr);
   }
 
+  /** @return static */
   public function setFromArray(array $array)
   {
     return parent::setFromArray($array);
