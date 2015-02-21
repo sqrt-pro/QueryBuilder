@@ -115,6 +115,7 @@ class selectTest extends PHPUnit_Framework_TestCase
     $exp_stmt = 'SELECT * FROM `pages` HAVING `total`=:having_total';
     $this->assertEquals($exp_sql, $q->asSQL(), 'Запрос в виде SQL');
     $this->assertEquals($exp_stmt, $q->asStatement(), 'Запрос в виде выражения');
+    $this->assertEquals(array(':having_total' => 10), $q->getBindedValues(), 'Подставляемые значения');
 
     $q->having(null);
     $exp = 'SELECT * FROM `pages`';

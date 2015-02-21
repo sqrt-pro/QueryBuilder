@@ -46,7 +46,7 @@ class Select extends FilteredQuery
 
     if ($this->having) {
       if ($arr = $this->getHaving()->getBindedValues('having')) {
-        $vars = array_merge($arr, $vars);
+        $vars = $vars ? array_merge($arr, $vars) : $arr;
       }
     }
 
