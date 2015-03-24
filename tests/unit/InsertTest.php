@@ -1,8 +1,6 @@
 <?php
 
-require_once __DIR__ . '/../init.php';
-
-class insertTest extends PHPUnit_Framework_TestCase
+class InsertTest extends PHPUnit_Framework_TestCase
 {
   function testAll()
   {

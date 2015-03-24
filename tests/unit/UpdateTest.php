@@ -1,8 +1,6 @@
 <?php
 
-require_once __DIR__ . '/../init.php';
-
-class updateTest extends PHPUnit_Framework_TestCase
+class UpdateTest extends PHPUnit_Framework_TestCase
 {
   function testSet()
   {

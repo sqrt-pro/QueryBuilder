@@ -1,7 +1,5 @@
 <?php
 
-require_once __DIR__ . '/../init.php';
-
 use SQRT\QueryBuilder\Conditions;
 use SQRT\QueryBuilder\Condition\Equal;
 use SQRT\QueryBuilder\Condition\In;
@@ -11,7 +9,7 @@ use SQRT\QueryBuilder\Condition\Greater;
 use SQRT\QueryBuilder\Condition\Less;
 use SQRT\QueryBuilder\Condition\Expr;
 
-class conditionsTest extends PHPUnit_Framework_TestCase
+class ConditionsTest extends PHPUnit_Framework_TestCase
 {
   /**
    * @dataProvider dataEqual

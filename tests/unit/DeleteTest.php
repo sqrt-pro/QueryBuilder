@@ -1,8 +1,6 @@
 <?php
 
-require_once __DIR__ . '/../init.php';
-
-class deleteTest extends PHPUnit_Framework_TestCase
+class DeleteTest extends PHPUnit_Framework_TestCase
 {
   function testAll()
   {

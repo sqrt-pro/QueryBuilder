@@ -1,8 +1,6 @@
 <?php
 
-require_once __DIR__ . '/../init.php';
-
-class quotesTest extends PHPUnit_Framework_TestCase
+class QuotesTest extends PHPUnit_Framework_TestCase
 {
   /**
    * @dataProvider dataQuoteTable
