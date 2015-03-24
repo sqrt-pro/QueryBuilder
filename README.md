@@ -1,6 +1,11 @@
 QueryBuilder
 ============
 
+[![Build Status](https://travis-ci.org/sqrt-pro/QueryBuilder.svg?branch=master)](https://travis-ci.org/sqrt-pro/QueryBuilder)
+[![Coverage Status](https://coveralls.io/repos/sqrt-pro/QueryBuilder/badge.svg?branch=master)](https://coveralls.io/r/sqrt-pro/QueryBuilder?branch=master)
+[![Latest Stable Version](https://poser.pugx.org/sqrt-pro/query-builder/v/stable.svg)](https://packagist.org/packages/sqrt-pro/query-builder)
+[![License](https://poser.pugx.org/sqrt-pro/query-builder/license.svg)](https://packagist.org/packages/sqrt-pro/query-builder)
+
 Библиотека для построения SQL запросов SELECT, UPDATE, INSERT, DELETE.
 
 Создание запросов начинается с создания объекта QueryBuilder. Можно сразу задать общий префикс для таблиц в БД:
